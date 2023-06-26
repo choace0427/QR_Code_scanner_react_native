@@ -3,49 +3,44 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useEffect, useState } from 'react';
 
-export default function App() {
-
+const App = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState("Not Yet Scanned");
   const [totalScan, setTotalScan] = useState(0);
 
-  const askForCameraPermission = () => {
-    (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status == 'Granted')
-    })()
-  }
+  const askForCameraPermission = async () => {
+    const { status } = await BarCodeScanner.getPermissionsAsync();
+    setHasPermission(status === 'Granted');
+  };
 
-  // Request Camera Permission
   useEffect(() => {
     askForCameraPermission();
-  }, [])
+  }, []);
 
-  // What Happens when we scan the bar code
   const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(True);
+    setScanned(true);
     setText(data);
-    setTotalScan(totalScan + 1);
-    console.log('Type: ', type, ' Data: ', data);
-  }
+    setTotalScan(totalScan => totalScan + 1);
+    console.log(`Type: ${type}, Data: ${data}`);
+  };
 
-  // check permissions and return the screens
   if (hasPermission === null) {
     return (
       <View style={styles.container}>
         <Text>Requesting For Camera Permission</Text>
       </View>
-    )
+    );
   }
-  if (hasPermission === false) {
-    return (
-      <View style={styles.container}>
-        <Text style={{ margin: 15 }}>No Access To Camera !</Text>
-        <Button title={'Allow Camera'} onPress={() => askForCameraPermission()} />
-      </View>
-    )
-  }
+
+  // if (hasPermission === false) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <Text style={{ margin: 15 }}>No Access To Camera !</Text>
+  //       <Button title={'Allow Camera'} onPress={()=>askForCameraPermission()} />
+  //     </View>
+  //   );
+  // }
 
   return (
     <View style={styles.container}>
@@ -55,12 +50,14 @@ export default function App() {
           style={{ height: 400, width: 400 }}
         />
       </View>
-      <Text style={{ fontSize: 30, margin: 25 }}>{text}</Text>
+      <Text style={{ fontSize: 27, margin: 25, textAlign: 'center' }}>{text}</Text>
       <Text style={{ fontSize: 20 }}>Total Scan : {totalScan}</Text>
       {scanned && <Button title={'Scan Again ?'} onPress={() => setScanned(false)} color='tomato' />}
     </View>
   );
-}
+};
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
