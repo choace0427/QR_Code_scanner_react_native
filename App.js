@@ -24,7 +24,7 @@ export default App = () => {
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setText(data);
-    setTotalScan((totalScan)=>totalScan + 1);
+    setTotalScan((totalScan) => totalScan + 1);
     console.log(`Type: ${type}, Data: ${data}`);
   };
 
