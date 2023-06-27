@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { useEffect, useState } from 'react';
 
 const App = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -9,9 +9,11 @@ const App = () => {
   const [text, setText] = useState("Not Yet Scanned");
   const [totalScan, setTotalScan] = useState(0);
 
-  const askForCameraPermission = async () => {
-    const { status } = await BarCodeScanner.getPermissionsAsync();
-    setHasPermission(status === 'Granted');
+  const askForCameraPermission = () => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })()
   };
 
   useEffect(() => {
@@ -33,14 +35,14 @@ const App = () => {
     );
   }
 
-  // if (hasPermission === false) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={{ margin: 15 }}>No Access To Camera !</Text>
-  //       <Button title={'Allow Camera'} onPress={()=>askForCameraPermission()} />
-  //     </View>
-  //   );
-  // }
+  if (hasPermission === false) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ margin: 15 }}>No Access To Camera !</Text>
+        <Button title={'Allow Camera'} onPress={() => askForCameraPermission()} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -52,7 +54,7 @@ const App = () => {
       </View>
       <Text style={{ fontSize: 27, margin: 25, textAlign: 'center' }}>{text}</Text>
       <Text style={{ fontSize: 20 }}>Total Scan : {totalScan}</Text>
-      {scanned && <Button title={'Scan Again ?'} onPress={() => setScanned(false)} color='tomato' />}
+      {scanned && <Button title={'Scan Again ?'} onPress={setScanned(false)} color='tomato' />}
     </View>
   );
 };
