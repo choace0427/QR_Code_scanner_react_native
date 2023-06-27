@@ -3,7 +3,7 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-const App = () => {
+export default App = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState("Not Yet Scanned");
@@ -12,18 +12,19 @@ const App = () => {
   const askForCameraPermission = () => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+      setHasPermission(status == 'granted');
     })()
   };
 
+  // Request Camera Permission
   useEffect(() => {
     askForCameraPermission();
   }, []);
-
+  // What happens When We Scan The BarCode
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setText(data);
-    setTotalScan(totalScan => totalScan + 1);
+    setTotalScan((totalScan)=>totalScan + 1);
     console.log(`Type: ${type}, Data: ${data}`);
   };
 
@@ -58,8 +59,6 @@ const App = () => {
     </View>
   );
 };
-
-export default App;
 
 const styles = StyleSheet.create({
   container: {
