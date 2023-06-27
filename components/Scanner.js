@@ -30,6 +30,10 @@ export default function Scanner() {
         setText(data);
         setTotalScan((totalScan) => totalScan + 1);
         console.log(`Type: ${type}, Data: ${data}`);
+         // Set a timer to reset the scanned state after 2 seconds
+         setTimeout(() => {
+            setScanned(false);
+        }, 5000);
     };
 
     // Show message while asking for camera permission
